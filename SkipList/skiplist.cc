@@ -29,7 +29,30 @@ void test_possibility(uint32_t test_times) {
     }
 }
 
+bool SkipList::Empty() const {
+    assert(list_[kMaxLevel] != nullptr);
+    return (list_[kMaxLevel]->size == 0);
+}
+
+size_t SkipList::Size() const {
+    assert(list_[kMaxLevel] != nullptr);
+    return list_[kMaxLevel] -> size;
+}
+
+SkipList::SkipList(): {
+    for(size_t i = 0; i <= kMaxLevel; ++i)
+        list_[i] = new SkipListNode();
+}
+
+// search one element on a specific level
+SkipList::SkipListNode *SkipList::BinarySearchHelper(uint32_t search_level, int32_t data) {}
+
+bool SkipList::Insert(const int32_t data) {}
+
+
+
+/*
 int main() {
     test_possibility(1000);
     return 0;
-}
+*/
