@@ -1,4 +1,5 @@
 #include "skiplist.h"
+#include "test.h"
 
 int main() {
     SkipList *skiplist = new SkipList();
@@ -10,7 +11,7 @@ int main() {
     uint32_t size = skiplist->Size();
     printf("size :%d\n", size);
     skiplist->PrintList();
-    for(int i = 0; i < 50; ++i) {
+    for(int i = 0; i < 100; ++i) {
         skiplist->Delete(i);
     }
     skiplist->PrintList();
