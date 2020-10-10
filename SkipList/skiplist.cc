@@ -100,17 +100,22 @@ SkipList::SkipListNode *SkipList::BinarySearchHelper(uint32_t search_level, cons
     return prev;
 }
 
-bool SkipList::Insert(const int32_t &data) {
+SkipList::InsertRetType SkipList::Insert(const int32_t &data) {
 
-    uint32_t insert_level;
+    uint32_t insert_level; 
+    uint32_t levelExceedTimes = 0;
     // get insert level must less than 5
-    while((insert_level = get_random_level()) > kMaxLevel)
-                ;
+    while((insert_level = get_random_level()) > kMaxLevel){
+        levelExceedTimes++;
+        if(levelExceedTimes > levelExceedLimit) 
+            return FalseInsertLevel;
+    }
+                
     // insert one element in the chosen level
     SkipListNode* insert_prev = BinarySearchHelper(insert_level, data);
     if(insert_prev->next->type == node && insert_prev->next->data == data) {
         printf("element is already in!\n");
-        return false;
+        return DataExists;
     } 
     SkipListNode *new_node = new SkipListNode(data, node);
     new_node->next = insert_prev->next;
@@ -146,7 +151,7 @@ bool SkipList::Insert(const int32_t &data) {
         cur = prev->below;
         prev = prev->below;
     }
-    return true;
+    return Succ;
 }
 
 SkipList::SkipListNode *SkipList::Find(const int32_t &data){

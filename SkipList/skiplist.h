@@ -13,7 +13,10 @@ class SkipList {
     // max levels a skiplist has;
     static const uint8_t kMaxLevel = 5;
     static const uint8_t kBaseLevel = 1;
+    static const uint32_t levelExceedLimit = 10;
     enum NodeType {header, node, tail} ;
+    enum InsertRetType {Succ, DataExists, FalseInsertLevel};
+
     struct SkipListNode {
         // only support simple data currently
         int32_t data;
@@ -50,7 +53,7 @@ class SkipList {
 
         bool Empty() const;
         size_t Size() const;
-        bool Insert(const int32_t &data);
+        InsertRetType Insert(const int32_t &data);
         SkipListNode *Find(const int32_t &data);
         bool Delete(const int32_t &data);
         void PrintList() const;
