@@ -12,7 +12,7 @@ class SkipList {
 
     // max levels a skiplist has;
     static const uint8_t kMaxLevel = 5;
-    enum NodeType {header, node} ;
+    enum NodeType {header, node, tail} ;
     struct SkipListNode {
         // only support simple data currently
         int32_t data;
@@ -39,10 +39,10 @@ class SkipList {
     
     public:
         // default constructor
-        SkipList() { }
+        SkipList(); 
         // construct list from initialization array
-        SkipList(std::vector<int32_t> init) { }
-        ~SkipList() {}
+        SkipList(std::vector<int32_t> init);
+        ~SkipList();
 
 
     public:

@@ -1,8 +1,8 @@
-OBJS = skiplist.o
+OBJS = skiplist.o main.o
 
 CC 		= g++
 TARGET 	= main
-CFLAGS 	= -Wall -g -O2
+CFLAGS 	= -Wall -g
 STD    	= -std=c++11
 CLIB	= -pthread
 
