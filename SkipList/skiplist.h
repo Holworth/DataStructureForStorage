@@ -44,7 +44,7 @@ class SkipList {
         // construct list from initialization array
         SkipList(std::vector<int32_t> init);
         ~SkipList();
-
+        bool distroyList();
 
     public:
 

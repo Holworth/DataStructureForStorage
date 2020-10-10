@@ -50,6 +50,27 @@ SkipList::SkipList() {
     }
 }
 
+bool SkipList::distroyList() {
+    for(size_t idx = kBaseLevel; idx <= kMaxLevel; ++idx) {
+        SkipListNode *cur = list_[idx]->next, *last = list_[idx];
+        while(cur->type != tail) {
+            last = cur; 
+            cur = cur->next;
+            delete last;
+        }
+    }
+    return true;
+}
+
+SkipList::~SkipList() {
+    distroyList();
+    for(size_t idx = kBaseLevel; idx <= kMaxLevel; ++idx){
+        assert(list_[idx]->next && list_[idx]->next->type == tail);
+        delete (list_[idx]->next);
+        delete (list_[idx]);
+    }
+}
+
 // search one element on a specific level
 SkipList::SkipListNode *SkipList::BinarySearchHelper(uint32_t search_level, const int32_t &data) {
     uint32_t clevel = kMaxLevel;
@@ -80,8 +101,11 @@ SkipList::SkipListNode *SkipList::BinarySearchHelper(uint32_t search_level, cons
 }
 
 bool SkipList::Insert(const int32_t &data) {
-    uint32_t insert_level = get_random_level();
-    
+
+    uint32_t insert_level;
+    // get insert level must less than 5
+    while((insert_level = get_random_level()) > kMaxLevel)
+                ;
     // insert one element in the chosen level
     SkipListNode* insert_prev = BinarySearchHelper(insert_level, data);
     if(insert_prev->next->type == node && insert_prev->next->data == data) {
