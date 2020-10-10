@@ -1,4 +1,4 @@
-OBJS = skiplist.o singlelist.o main.o
+OBJS = skiplist.o singlelist.o test.o main.o
 
 CC 		= g++
 TARGET 	= main

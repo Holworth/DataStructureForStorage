@@ -20,7 +20,7 @@ SingleList::InsertRetType SingleList::Insert(const int32_t &data) {
     if(prev->next && prev->next->data == data)
         return DataExists;
     SingleListNode *new_node = new SingleListNode(data);
-    new_node->next = prev;
+    new_node->next = prev->next;
     prev->next = new_node;
     return InsertSucc;
 }

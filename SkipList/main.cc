@@ -1,19 +1,18 @@
 #include "skiplist.h"
+#include "singlelist.h"
 #include "test.h"
+#define SKIPLIST_SIMPLE_TEST   1
+#define SINGLELIST_SIMPLE_TEST 1
 
 int main() {
-    SkipList *skiplist = new SkipList();
-    for(int i = 0; i < 100; ++i){
-        int32_t t = rand() % 10000;
-        printf("Insert:%d\n", t);
-        skiplist->Insert(i);
-    }
-    uint32_t size = skiplist->Size();
-    printf("size :%d\n", size);
-    skiplist->PrintList();
-    for(int i = 0; i < 100; ++i) {
-        skiplist->Delete(i);
-    }
-    skiplist->PrintList();
+
+    #ifdef SKIPLIST_SIMPLE_TEST
+    skiplist_simple_test();
+    #endif
+
+    #ifdef SINGLELIST_SIMPLE_TEST
+    singlelist_simple_test();
+    #endif
+
     return 0;
 }
