@@ -35,8 +35,8 @@ bool SkipList::Empty() const {
 }
 
 size_t SkipList::Size() const {
-    assert(list_[1] != nullptr);
-    return list_[1] -> size;
+    assert(list_[kBaseLevel] != nullptr);
+    return list_[kBaseLevel] -> size;
 }
 
 SkipList::SkipList() {
