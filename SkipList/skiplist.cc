@@ -51,7 +51,7 @@ SkipList::SkipList() {
 }
 
 // search one element on a specific level
-SkipList::SkipListNode *SkipList::BinarySearchHelper(uint32_t search_level, int32_t data) {
+SkipList::SkipListNode *SkipList::BinarySearchHelper(uint32_t search_level, const int32_t &data) {
     uint32_t clevel = kMaxLevel;
     SkipListNode *prev = list_[clevel], *cur = list_[clevel];
     while(clevel >= search_level) {
@@ -79,7 +79,7 @@ SkipList::SkipListNode *SkipList::BinarySearchHelper(uint32_t search_level, int3
     return prev;
 }
 
-bool SkipList::Insert(const int32_t data) {
+bool SkipList::Insert(const int32_t &data) {
     uint32_t insert_level = get_random_level();
     
     // insert one element in the chosen level
@@ -98,7 +98,7 @@ bool SkipList::Insert(const int32_t data) {
                  *prev = insert_prev->below;
     SkipListNode *last_level_new = new_node;
 
-    while(clevel >= 1) {
+    while(clevel >= kBaseLevel) {
         assert(cur != nullptr);
         if(cur->next->type == node) {
             prev = cur;
@@ -110,11 +110,12 @@ bool SkipList::Insert(const int32_t data) {
         }
         new_node = new SkipListNode(data, node);
         //update below pointer;
-        // insert element
         last_level_new->below = new_node;
         last_level_new = new_node;
+        // insert element
         new_node->next = prev->next;
         prev->next = new_node;
+        // update size for each level
         (list_[clevel]->size)++;
 
         --clevel; 
@@ -124,9 +125,27 @@ bool SkipList::Insert(const int32_t data) {
     return true;
 }
 
+SkipList::SkipListNode *SkipList::Find(const int32_t &data){
+    SkipListNode *prev = BinarySearchHelper(kBaseLevel, data);
+    assert(prev != nullptr);
+    // find one
+    if(prev->next->type == node && prev->next->data == data) {
+        return prev->next;
+    } else {
+        // no match data
+        return nullptr;
+    }
+}
+
+
 void SkipList::PrintList() const {
-    for(SkipListNode *start = list_[1]->next; start->type != tail; start = start->next){
-        std::cout << start->data << std::endl;
+    for(size_t idx = kMaxLevel; idx >= kBaseLevel; --idx) {
+        printf("Level %d:", idx);
+        for(SkipListNode *cur = list_[idx]->next; cur->type != tail; 
+                                        cur = cur->next){   
+                printf("%d->", cur->data);
+        }
+        printf("\n");
     }
 }
 /*
