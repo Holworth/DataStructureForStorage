@@ -10,5 +10,9 @@ int main() {
     uint32_t size = skiplist->Size();
     printf("size :%d\n", size);
     skiplist->PrintList();
+    for(int i = 0; i < 50; ++i) {
+        skiplist->Delete(i);
+    }
+    skiplist->PrintList();
     return 0;
 }

@@ -15,7 +15,8 @@ class SkipList {
     static const uint8_t kBaseLevel = 1;
     static const uint32_t levelExceedLimit = 10;
     enum NodeType {header, node, tail} ;
-    enum InsertRetType {Succ, DataExists, FalseInsertLevel};
+    enum InsertRetType {InsertSucc, DataExists, FalseInsertLevel};
+    enum DeleteRetType {DeleteSucc, DataNotExist};
 
     struct SkipListNode {
         // only support simple data currently
@@ -55,7 +56,7 @@ class SkipList {
         size_t Size() const;
         InsertRetType Insert(const int32_t &data);
         SkipListNode *Find(const int32_t &data);
-        bool Delete(const int32_t &data);
+        DeleteRetType Delete(const int32_t &data);
         void PrintList() const;
 };
 

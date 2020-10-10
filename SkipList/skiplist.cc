@@ -151,7 +151,7 @@ SkipList::InsertRetType SkipList::Insert(const int32_t &data) {
         cur = prev->below;
         prev = prev->below;
     }
-    return Succ;
+    return InsertSucc;
 }
 
 SkipList::SkipListNode *SkipList::Find(const int32_t &data){
@@ -176,4 +176,29 @@ void SkipList::PrintList() const {
         }
         printf("\n");
     }
+}
+
+SkipList::DeleteRetType SkipList::Delete(const int32_t &data) {
+
+    uint32_t clevel = kMaxLevel;
+    uint32_t deltimes = 0;
+    SkipListNode *prev = list_[clevel], *cur = list_[clevel]->next;
+    while(clevel >= kBaseLevel) {
+        while(cur->type == node && cur->data < data) {
+            prev = cur;
+            cur  = cur->next;
+        }
+        if (cur->type == node && cur->data == data) {
+            prev->next = cur->next;
+            delete cur;
+            ++deltimes;
+        }
+        if(clevel > 1) {
+            prev = prev->below;
+            cur  = prev->next;
+        }
+        --clevel;
+    }
+    if(deltimes > 0) return DeleteSucc;
+    else return DataNotExist;
 }
