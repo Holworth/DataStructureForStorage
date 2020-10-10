@@ -35,8 +35,8 @@ bool SkipList::Empty() const {
 }
 
 size_t SkipList::Size() const {
-    assert(list_[kMaxLevel] != nullptr);
-    return list_[kMaxLevel] -> size;
+    assert(list_[1] != nullptr);
+    return list_[1] -> size;
 }
 
 SkipList::SkipList() {
@@ -54,25 +54,27 @@ SkipList::SkipList() {
 SkipList::SkipListNode *SkipList::BinarySearchHelper(uint32_t search_level, int32_t data) {
     uint32_t clevel = kMaxLevel;
     SkipListNode *prev = list_[clevel], *cur = list_[clevel];
-    while(clevel <= search_level) {
+    while(clevel >= search_level) {
         if (cur->next->type == tail) {
             prev = cur;
-            continue;
-        }
-        if(cur->next->type == node){
+            goto update;
+        } else if(cur->next->type == node){
             prev = cur;
             cur = cur->next;
         }
+
         while(cur->data < data) {
             prev = cur;
-            prev = prev->next;
+            cur = cur->next;
         }
-        if(clevel == search_level) return prev;
-        else {
-           cur = prev->below;
-           prev = prev->below; 
-        }
-        ++clevel;
+
+        update:
+            if(clevel == search_level) return prev;
+            else {
+            cur = prev->below;
+            prev = prev->below; 
+            }
+            --clevel;
     }
     return prev;
 }
@@ -89,21 +91,33 @@ bool SkipList::Insert(const int32_t data) {
     SkipListNode *new_node = new SkipListNode(data, node);
     new_node->next = insert_prev->next;
     insert_prev->next = new_node;
+    (list_[insert_level]->size)++;
     // next level;
-    uint32_t clevel = insert_level + 1;
+    uint32_t clevel = insert_level - 1;
     SkipListNode *cur = insert_prev->below, 
                  *prev = insert_prev->below;
-    while(clevel <= kMaxLevel) {
+    SkipListNode *last_level_new = new_node;
+
+    while(clevel >= 1) {
         assert(cur != nullptr);
+        if(cur->next->type == node) {
+            prev = cur;
+            cur = cur->next;
+        }
         while(cur->type == node && cur->data < data) {
             prev = cur;
             cur  = cur->next;
         }
-        SkipListNode *new_node = new SkipListNode(data, node);
-        new_node->next = insert_prev->next;
-        insert_prev->next = new_node;
+        new_node = new SkipListNode(data, node);
+        //update below pointer;
+        // insert element
+        last_level_new->below = new_node;
+        last_level_new = new_node;
+        new_node->next = prev->next;
+        prev->next = new_node;
+        (list_[clevel]->size)++;
 
-        ++clevel; 
+        --clevel; 
         cur = prev->below;
         prev = prev->below;
     }
