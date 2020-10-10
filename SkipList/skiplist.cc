@@ -121,8 +121,14 @@ bool SkipList::Insert(const int32_t data) {
         cur = prev->below;
         prev = prev->below;
     }
+    return true;
 }
 
+void SkipList::PrintList() const {
+    for(SkipListNode *start = list_[1]->next; start->type != tail; start = start->next){
+        std::cout << start->data << std::endl;
+    }
+}
 /*
 int main() {
     test_possibility(1000);

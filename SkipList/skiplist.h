@@ -52,6 +52,7 @@ class SkipList {
         bool Insert(const int32_t data);
         SkipListNode *Find(const int32_t data);
         bool Delete(const int32_t data);
+        void PrintList() const;
 };
 
 
