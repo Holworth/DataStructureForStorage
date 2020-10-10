@@ -177,8 +177,3 @@ void SkipList::PrintList() const {
         printf("\n");
     }
 }
-/*
-int main() {
-    test_possibility(1000);
-    return 0;
-*/
