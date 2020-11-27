@@ -32,10 +32,13 @@ namespace btree
     */
     void BTree::shift_entry(TreeNode *node, size_t idx)
     {
-        for(uint32_t i = node->Count; i > idx; --idx)
+        for(uint32_t i = node->Count; i > idx; --i)
         {
             node->keys[i] = node->keys[i-1];
             node->branchs[i+1] = node->branchs[i];
+            if(node->branchs[i+1] != nullptr) {
+                (node->branchs[i+1])->idx_in_parent = i+1;
+            }
         }
     }
 
@@ -55,7 +58,9 @@ namespace btree
         {
             uint32_t idx = binary_search(tmp, key);
             // which means the item is not in this tree
-            if(idx+1 > tmp->Count) {
+            // the next level node is null and the item itself is not 
+            // in the node
+            if(tmp->branchs[idx] == nullptr && idx+1 > tmp->Count) {
                 return std::make_pair(tmp, nullptr);
             }
             KeyType x = ((tmp->keys)[idx]).first;
@@ -164,6 +169,7 @@ namespace btree
 
         if(par == nullptr) {
             par = new TreeNode;
+            splited_node->parent = par;
             tree_root = par;
         }
         KeyType mid_key = (splited_node->keys[mid]).first;
@@ -203,7 +209,12 @@ namespace btree
     {
         for(size_t i = 0; i < num; ++i)
         {
-            *(dst++) = *(src++);
+            *dst = *src;
+            if(*dst != nullptr) {
+                (*dst)->idx_in_parent = i;
+            }
+            ++dst;
+            ++src;
         }
     }
 
@@ -213,9 +224,15 @@ namespace btree
         uint32_t inserted_idx = binary_search(par, key);
         shift_entry(par, inserted_idx);
 
+        // remember set the child node's idx_in_parent value
         par->keys[inserted_idx] = std::make_pair(key, val);
         par->branchs[inserted_idx]   = left_sibling;
+        left_sibling->idx_in_parent = inserted_idx;
         par->branchs[inserted_idx+1] = right_sibling;
+        right_sibling->idx_in_parent = inserted_idx+1;
+
+        left_sibling->parent = right_sibling->parent = par;
+
         par->Count += 1;
     }
 }

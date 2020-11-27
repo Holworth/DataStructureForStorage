@@ -90,6 +90,7 @@ private:
 
 private:
     uint32_t order_m_;
+    uint32_t height;
     TreeNode *tree_root;
 
     // here are some limit
