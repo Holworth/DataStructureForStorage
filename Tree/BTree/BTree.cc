@@ -13,15 +13,30 @@ namespace btree
     {
         uint32_t bound = node->Count;
         int pos = -1;
-        for(uint32_t p = bound / 2; p >= 1; p /= 2)
+        for(uint32_t p = bound; p >= 1; p /= 2)
         {
             while(true) {
-                KeyType tmp = ((node->keys)[pos+p]).first;
-                if(tmp < key) pos += p;
+                auto np = pos+p;
+                KeyType tmp = ((node->keys)[np]).first;
+                if(np < node->Count &&  tmp < key) pos = np;
                 else break;
             }
         }
         return pos+1;
+    }
+
+    /*
+        This function do a simple shift operation for a tree node
+        parameter TreeNode *node specifies which node need to be shifted
+        parameter idx specifies the start of the shifted entries
+    */
+    void BTree::shift_entry(TreeNode *node, size_t idx)
+    {
+        for(uint32_t i = node->Count; i > idx; --idx)
+        {
+            node->keys[i] = node->keys[i-1];
+            node->branchs[i+1] = node->branchs[i];
+        }
     }
 
     /*
@@ -39,6 +54,10 @@ namespace btree
         while(tmp)
         {
             uint32_t idx = binary_search(tmp, key);
+            // which means the item is not in this tree
+            if(idx+1 > tmp->Count) {
+                return std::make_pair(tmp, nullptr);
+            }
             KeyType x = ((tmp->keys)[idx]).first;
             // if find directly
             if(x == key) {
@@ -75,12 +94,7 @@ namespace btree
     void BTree::insert_leaf_node_without_split(TreeNode *node, const KeyType &key, const ValType &val)
     {
         uint32_t idx = binary_search(node, key);
-        uint32_t old_count = node->Count;
-        for(uint32_t i = old_count; i > idx; --i)
-        {
-            node->keys[i] = node->keys[i-1];
-            node->branchs[i+1] = node->branchs[i];
-        }
+        shift_entry(node, idx);
         node->keys[idx] = std::make_pair(key, val);
         node->Count += 1;
     }
@@ -99,6 +113,7 @@ namespace btree
         if(find_res.second != nullptr) {
             return false;
         }
+        // otherwise do some insert
         TreeNode *inserted_node = find_res.first;
 
         insert_leaf_node_without_split(inserted_node, key, val);
@@ -178,7 +193,7 @@ namespace btree
 
     void BTree::move_item(ItemType *dst, ItemType *src, size_t num)
     {
-        for(int i = 0; i < num; ++i)
+        for(size_t i = 0; i < num; ++i)
         {
             *(dst++) = *(src++);
         }
@@ -186,7 +201,7 @@ namespace btree
 
     void BTree::move_branch(TreeNode **dst, TreeNode **src, size_t num)
     {
-        for(int i = 0; i < num; ++i)
+        for(size_t i = 0; i < num; ++i)
         {
             *(dst++) = *(src++);
         }
@@ -195,18 +210,12 @@ namespace btree
     void BTree::insert_node_without_split(TreeNode *par, TreeNode *left_sibling, TreeNode *right_sibling, 
                                             const KeyType &key, const ValType &val)
     {
-        uint32_t old_count = par->Count;
         uint32_t inserted_idx = binary_search(par, key);
+        shift_entry(par, inserted_idx);
 
-        for(uint32_t i = old_count; i > inserted_idx; --i)
-        {
-            par->keys[i] = par->keys[i-1];
-            par->branchs[i+1] = par->branchs[i];
-        }
         par->keys[inserted_idx] = std::make_pair(key, val);
         par->branchs[inserted_idx]   = left_sibling;
         par->branchs[inserted_idx+1] = right_sibling;
-
         par->Count += 1;
     }
 }

@@ -43,6 +43,11 @@ public:
         tree_root = new TreeNode;
     }
 
+    BTree(): order_m_(maxn_order)
+    {
+        tree_root = new TreeNode;
+    }
+
     ~BTree() { std::cout << "Tree is destroyed" << std::endl;}
 
     ItemType *search(const KeyType &);
@@ -57,12 +62,15 @@ private:
     uint32_t binary_search(const TreeNode *, const KeyType &) const;
 
 
+    // some helper functions
+    inline void move_item(ItemType *, ItemType *, size_t);
+    inline void move_branch(TreeNode **, TreeNode **, size_t);
+    inline void shift_entry(TreeNode *, size_t );
+
     // insert related
     void insert_leaf_node_without_split(TreeNode *, const KeyType&, const ValType &);
     bool split_node(TreeNode *);
     TreeNode *split_single_node(TreeNode *);
-    inline void move_item(ItemType *, ItemType *, size_t);
-    inline void move_branch(TreeNode **, TreeNode **, size_t);
     void insert_node_without_split(TreeNode *, TreeNode *, TreeNode *, const KeyType &, const ValType &);
 
     // other simple functions
