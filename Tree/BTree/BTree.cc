@@ -155,8 +155,8 @@ namespace btree
         TreeNode *new_splited = new TreeNode, *par = splited_node->parent;
 
         // first move data
-        move_item(splited_node->keys+mid+1, new_splited->keys, old_count-mid-1);
-        move_branch(splited_node->branchs+mid+1, new_splited->branchs, old_count-mid);
+        move_item(new_splited->keys, splited_node->keys+mid+1, old_count-mid-1);
+        move_branch(new_splited->branchs, splited_node->branchs+mid+1, old_count-mid);
         // remember to set Count
         splited_node->Count = mid;
         new_splited->Count = old_count-mid-1;
