@@ -65,7 +65,7 @@ private:
     // some helper functions
     inline void move_item(ItemType *, ItemType *, size_t);
     inline void move_branch(TreeNode **, TreeNode **, size_t);
-    inline void shift_entry(TreeNode *, size_t );
+    inline void shift_right_entry(TreeNode *, size_t );
 
     // insert related
     void insert_leaf_node_without_split(TreeNode *, const KeyType&, const ValType &);

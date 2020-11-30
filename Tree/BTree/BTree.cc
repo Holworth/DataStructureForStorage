@@ -30,7 +30,7 @@ namespace btree
         parameter TreeNode *node specifies which node need to be shifted
         parameter idx specifies the start of the shifted entries
     */
-    void BTree::shift_entry(TreeNode *node, size_t idx)
+    void BTree::shift_right_entry(TreeNode *node, size_t idx)
     {
         for(uint32_t i = node->Count; i > idx; --i)
         {
@@ -99,7 +99,7 @@ namespace btree
     void BTree::insert_leaf_node_without_split(TreeNode *node, const KeyType &key, const ValType &val)
     {
         uint32_t idx = binary_search(node, key);
-        shift_entry(node, idx);
+        shift_right_entry(node, idx);
         node->keys[idx] = std::make_pair(key, val);
         node->Count += 1;
     }
@@ -195,6 +195,9 @@ namespace btree
     /*
         This two functions moves data from one position to 
         another. 
+        move_item only moves items
+        move_branch is a little more complicated as it must
+        set the child node's idx_parent contributes
     */
 
     void BTree::move_item(ItemType *dst, ItemType *src, size_t num)
@@ -222,7 +225,7 @@ namespace btree
                                             const KeyType &key, const ValType &val)
     {
         uint32_t inserted_idx = binary_search(par, key);
-        shift_entry(par, inserted_idx);
+        shift_right_entry(par, inserted_idx);
 
         // remember set the child node's idx_in_parent value
         par->keys[inserted_idx] = std::make_pair(key, val);
