@@ -4,6 +4,7 @@ project(BTree)
 
 set(CXX_STANDARD 17)
 
+# create a static library of BTree
 add_library(
     btree
     BTree.cc
